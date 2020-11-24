@@ -126,6 +126,12 @@ class SearchService < BaseService
   end
 
   def parsed_query
-    SearchQueryTransformer.new.apply(SearchQueryParser.new.parse(@query))
+    split_query = @query.split(/[ |　]/)
+    new_query = []
+    split_query.each{|var|
+      new_query << '"'+var+'"'
+    }
+    q = new_query.join(' ')
+    SearchQueryTransformer.new.apply(SearchQueryParser.new.parse(q))
   end
 end
