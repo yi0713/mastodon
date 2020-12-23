@@ -129,7 +129,13 @@ class SearchService < BaseService
     split_query = @query.split(/[ |　]/)
     new_query = []
     split_query.each{|var|
-      new_query << '"'+var+'"'
+      if var[0] == '+' 
+        new_query << '+"'+var[1..]+'"'
+      elsif var[0] == '-'
+        new_query << '-"'+var[1..]+'"'
+      else 
+        new_query << '"'+var+'"'
+      end
     }
     q = new_query.join(' ')
     SearchQueryTransformer.new.apply(SearchQueryParser.new.parse(q))
