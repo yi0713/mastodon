@@ -18,7 +18,7 @@ ja:
     contact_unavailable: N/A
     discover_users: クラゲ丼ディレクトリ
     documentation: ドキュメント
-    federation_hint_html: "%{instance} のアカウントひとつでどんなMastodon互換サーバーのユーザーでもフォローできるでしょう。"
+    federation_hint_html: "%{instance} のアカウントひとつで他のMastodon互換サーバーのユーザーともつながることができます。"
     get_apps: モバイルアプリを試す
     hosted_on: Mastodon hosted on %{domain}
     instance_actor_flash: "このアカウントはサーバーそのものを示す仮想的なもので、特定のユーザーを示すものではありません。これはサーバーの連合のために使用されます。サーバー全体をブロックするときは、このアカウントをブロックせずに、ドメインブロックを使用してください。 \n"
@@ -26,7 +26,7 @@ ja:
     privacy_policy: プライバシーポリシー
     rules: サーバーのルール
     rules_html: 'このMastodonサーバーには、アカウントの所持にあたって従うべきルールが設定されています。概要は以下の通りです:'
-    see_whats_happening: やりとりを見てみる
+    see_whats_happening: クラゲ丼タイムライン 
     server_stats: 'サーバー統計:'
     source_code: ソースコード
     status_count_after:
