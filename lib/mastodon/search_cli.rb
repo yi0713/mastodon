@@ -64,7 +64,9 @@ module Mastodon
       progress.title = 'Estimating workload '
 
       # Estimate the amount of data that has to be imported first
-      progress.total = indices.sum { |index| index.adapter.default_scope.count }
+      indices.each do |index|
+        progress.total = (progress.total || 0) + index.adapter.default_scope.count
+      end
 
       # Now import all the actual data. Mind that unlike chewy:sync, we don't
       # fetch and compare all record IDs from the database and the index to
@@ -96,10 +98,8 @@ module Mastodon
                 delete_count    = 0
 
                 ActiveRecord::Base.connection_pool.with_connection do
-                  grouped_records = records.to_a.group_by do |record|
-                    index.adapter.send(:delete_from_index?, record) ? :delete : :to_index
-                  end
-
+                  grouped_records = index.adapter.send(:grouped_objects, records)
+                  grouped_records = { to_index: grouped_records[:index] || [], delete: grouped_records[:delete] || [] } unless grouped_records.key?(:to_index) && grouped_records.key?(:delete)
                   bulk_body       = Chewy::Index::Import::BulkBuilder.new(index, **grouped_records).bulk_body
                 end
 
