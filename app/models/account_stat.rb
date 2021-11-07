@@ -19,5 +19,5 @@ class AccountStat < ApplicationRecord
 
   belongs_to :account, inverse_of: :account_stat
 
-  update_index('accounts', :account)
+  update_index('accounts#account', :account)
 end

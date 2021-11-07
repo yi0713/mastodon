@@ -144,7 +144,7 @@ class Account < ApplicationRecord
 
   delegate :chosen_languages, to: :user, prefix: false, allow_nil: true
 
-  update_index('accounts', :self)
+  update_index('accounts#account', :self)
 
   def local?
     domain.nil?
