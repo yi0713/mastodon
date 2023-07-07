@@ -150,6 +150,26 @@ RSpec.describe MediaAttachment, type: :model do
     end
   end
 
+  describe 'mp3 with large cover art' do
+    let(:media) { described_class.create(account: Fabricate(:account), file: attachment_fixture('boop.mp3')) }
+
+    it 'detects it as an audio file' do
+      expect(media.type).to eq 'audio'
+    end
+
+    it 'sets meta for the duration' do
+      expect(media.file.meta['original']['duration']).to be_within(0.05).of(0.235102)
+    end
+
+    it 'extracts thumbnail' do
+      expect(media.thumbnail.present?).to be true
+    end
+
+    it 'gives the file a random name' do
+      expect(media.file_file_name).to_not eq 'boop.mp3'
+    end
+  end
+
   describe 'jpeg' do
     let(:media) { MediaAttachment.create(account: Fabricate(:account), file: attachment_fixture('attachment.jpg')) }
 
@@ -184,14 +204,6 @@ RSpec.describe MediaAttachment, type: :model do
   it 'is invalid without file' do
     media = MediaAttachment.new(account: Fabricate(:account))
     expect(media.valid?).to be false
-  end
-
-  describe 'descriptions for remote attachments' do
-    it 'are cut off at 1500 characters' do
-      media = Fabricate(:media_attachment, description: 'foo' * 1000, remote_url: 'http://example.com/blah.jpg')
-
-      expect(media.description.size).to be <= 1_500
-    end
   end
 
   describe 'size limit validation' do

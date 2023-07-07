@@ -3,6 +3,7 @@
 class RemoveStatusService < BaseService
   include Redisable
   include Payloadable
+  include Lockable
 
   # Delete a status
   # @param   [Status] status
@@ -11,47 +12,47 @@ class RemoveStatusService < BaseService
   # @option  [Boolean] :immediate
   # @option  [Boolean] :preserve
   # @option  [Boolean] :original_removed
+  # @option  [Boolean] :skip_streaming
   def call(status, **options)
     @payload  = Oj.dump(event: :delete, payload: status.id.to_s)
     @status   = status
     @account  = status.account
     @options  = options
 
-    @status.discard
+    with_lock("distribute:#{@status.id}") do
+      @status.discard
 
-    RedisLock.acquire(lock_options) do |lock|
-      if lock.acquired?
-        remove_from_self if @account.local?
-        remove_from_followers
-        remove_from_lists
+      remove_from_self if @account.local?
+      remove_from_followers
+      remove_from_lists
 
-        # There is no reason to send out Undo activities when the
-        # cause is that the original object has been removed, since
-        # original object being removed implicitly removes reblogs
-        # of it. The Delete activity of the original is forwarded
-        # separately.
-        remove_from_remote_reach if @account.local? && !@options[:original_removed]
+      # There is no reason to send out Undo activities when the
+      # cause is that the original object has been removed, since
+      # original object being removed implicitly removes reblogs
+      # of it. The Delete activity of the original is forwarded
+      # separately.
+      remove_from_remote_reach if @account.local? && !@options[:original_removed]
 
-        # Since reblogs don't mention anyone, don't get reblogged,
-        # favourited and don't contain their own media attachments
-        # or hashtags, this can be skipped
-        unless @status.reblog?
-          remove_from_mentions
-          remove_reblogs
-          remove_from_hashtags
-          remove_from_public
-          remove_from_media if @status.media_attachments.any?
-          remove_media
-        end
-
-        @status.destroy! if permanently?
-      else
-        raise Mastodon::RaceConditionError
+      # Since reblogs don't mention anyone, don't get reblogged,
+      # favourited and don't contain their own media attachments
+      # or hashtags, this can be skipped
+      unless @status.reblog?
+        remove_from_mentions
+        remove_reblogs
+        remove_from_hashtags
+        remove_from_public
+        remove_from_media if @status.with_media?
+        remove_media
       end
+
+      @status.destroy! if permanently?
     end
   end
 
   private
+
+  # The following FeedManager calls all do not result in redis publishes for
+  # streaming, as the `:update` option is false
 
   def remove_from_self
     FeedManager.instance.unpush_from_home(@account, @status)
@@ -76,6 +77,8 @@ class RemoveStatusService < BaseService
     # followers. Here we send a delete to actively mentioned accounts
     # that may not follow the account
 
+    return if skip_streaming?
+
     @status.active_mentions.find_each do |mention|
       redis.publish("timeline:#{mention.account_id}", @payload)
     end
@@ -95,7 +98,7 @@ class RemoveStatusService < BaseService
   end
 
   def signed_activity_json
-    @signed_activity_json ||= Oj.dump(serialize_payload(@status, @status.reblog? ? ActivityPub::UndoAnnounceSerializer : ActivityPub::DeleteSerializer, signer: @account))
+    @signed_activity_json ||= Oj.dump(serialize_payload(@status, @status.reblog? ? ActivityPub::UndoAnnounceSerializer : ActivityPub::DeleteSerializer, signer: @account, always_sign: true))
   end
 
   def remove_reblogs
@@ -104,7 +107,7 @@ class RemoveStatusService < BaseService
     # without us being able to do all the fancy stuff
 
     @status.reblogs.includes(:account).reorder(nil).find_each do |reblog|
-      RemoveStatusService.new.call(reblog, original_removed: true)
+      RemoveStatusService.new.call(reblog, original_removed: true, skip_streaming: skip_streaming?)
     end
   end
 
@@ -115,6 +118,8 @@ class RemoveStatusService < BaseService
 
     return unless @status.public_visibility?
 
+    return if skip_streaming?
+
     @status.tags.map(&:name).each do |hashtag|
       redis.publish("timeline:hashtag:#{hashtag.mb_chars.downcase}", @payload)
       redis.publish("timeline:hashtag:#{hashtag.mb_chars.downcase}:local", @payload) if @status.local?
@@ -124,12 +129,16 @@ class RemoveStatusService < BaseService
   def remove_from_public
     return unless @status.public_visibility?
 
+    return if skip_streaming?
+
     redis.publish('timeline:public', @payload)
     redis.publish(@status.local? ? 'timeline:public:local' : 'timeline:public:remote', @payload)
   end
 
   def remove_from_media
     return unless @status.public_visibility?
+
+    return if skip_streaming?
 
     redis.publish('timeline:public:media', @payload)
     redis.publish(@status.local? ? 'timeline:public:local:media' : 'timeline:public:remote:media', @payload)
@@ -145,7 +154,7 @@ class RemoveStatusService < BaseService
     @options[:immediate] || !(@options[:preserve] || @status.reported?)
   end
 
-  def lock_options
-    { redis: Redis.current, key: "distribute:#{@status.id}", autorelease: 5.minutes.seconds }
+  def skip_streaming?
+    !!@options[:skip_streaming]
   end
 end

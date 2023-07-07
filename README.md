@@ -5,13 +5,11 @@
 [![Build Status](https://img.shields.io/circleci/project/github/mastodon/mastodon.svg)][circleci]
 [![Code Climate](https://img.shields.io/codeclimate/maintainability/mastodon/mastodon.svg)][code_climate]
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/mastodon/localized.svg)][crowdin]
-[![Docker Pulls](https://img.shields.io/docker/pulls/tootsuite/mastodon.svg)][docker]
 
 [releases]: https://github.com/mastodon/mastodon/releases
 [circleci]: https://circleci.com/gh/mastodon/mastodon
 [code_climate]: https://codeclimate.com/github/mastodon/mastodon
 [crowdin]: https://crowdin.com/project/mastodon
-[docker]: https://hub.docker.com/r/tootsuite/mastodon/
 
 Mastodon is a **free, open-source social network server** based on ActivityPub where users can follow friends and discover new ones. On Mastodon, users can publish anything they want: links, pictures, text, video. All Mastodon servers are interoperable as a federated network (users on one server can seamlessly communicate with users from another one, including non-Mastodon software that implements ActivityPub)!
 
@@ -28,7 +26,8 @@ Click below to **learn more** in a video:
 - [View sponsors](https://joinmastodon.org/sponsors)
 - [Blog](https://blog.joinmastodon.org)
 - [Documentation](https://docs.joinmastodon.org)
-- [Browse Mastodon servers](https://joinmastodon.org/#getting-started)
+- [Official Docker image](https://github.com/mastodon/mastodon/pkgs/container/mastodon)
+- [Browse Mastodon servers](https://joinmastodon.org/communities)
 - [Browse Mastodon apps](https://joinmastodon.org/apps)
 
 [patreon]: https://www.patreon.com/mastodon
@@ -92,7 +91,7 @@ You can open issues for bugs you've found or features you think are missing. You
 
 ## License
 
-Copyright (C) 2016-2021 Eugen Rochko & other Mastodon contributors (see [AUTHORS.md](AUTHORS.md))
+Copyright (C) 2016-2022 Eugen Rochko & other Mastodon contributors (see [AUTHORS.md](AUTHORS.md))
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU Affero General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 

@@ -25,7 +25,7 @@ module Twitter::TwitterText
       \)
     /iox
     UCHARS = '\u{A0}-\u{D7FF}\u{F900}-\u{FDCF}\u{FDF0}-\u{FFEF}\u{10000}-\u{1FFFD}\u{20000}-\u{2FFFD}\u{30000}-\u{3FFFD}\u{40000}-\u{4FFFD}\u{50000}-\u{5FFFD}\u{60000}-\u{6FFFD}\u{70000}-\u{7FFFD}\u{80000}-\u{8FFFD}\u{90000}-\u{9FFFD}\u{A0000}-\u{AFFFD}\u{B0000}-\u{BFFFD}\u{C0000}-\u{CFFFD}\u{D0000}-\u{DFFFD}\u{E1000}-\u{EFFFD}\u{E000}-\u{F8FF}\u{F0000}-\u{FFFFD}\u{100000}-\u{10FFFD}'
-    REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|@#{UCHARS}]/iou
+    REGEXEN[:valid_url_query_chars] = /[a-z0-9!?\*'\(\);:&=\+\$\/%#\[\]\-_\.,~|@\^#{UCHARS}]/iou
     REGEXEN[:valid_url_query_ending_chars] = /[a-z0-9_&=#\/\-#{UCHARS}]/iou
     REGEXEN[:valid_url_path] = /(?:
       (?:
@@ -74,31 +74,5 @@ module Twitter::TwitterText
         )
       )
     }iox
-  end
-
-  module Extractor
-    # Extracts a list of all XMPP and magnet URIs included in the Toot <tt>text</tt> along
-    # with the indices. If the <tt>text</tt> is <tt>nil</tt> or contains no
-    # XMPP or magnet URIs an empty array will be returned.
-    #
-    # If a block is given then it will be called for each XMPP URI.
-    def extract_extra_uris_with_indices(text, _options = {}) # :yields: uri, start, end
-      return [] unless text && text.index(":")
-      urls = []
-
-      text.to_s.scan(Twitter::TwitterText::Regex[:valid_extended_uri]) do
-        valid_uri_match_data = $~
-
-        start_position = valid_uri_match_data.char_begin(3)
-        end_position = valid_uri_match_data.char_end(3)
-
-        urls << {
-          :url => valid_uri_match_data[3],
-          :indices => [start_position, end_position]
-        }
-      end
-      urls.each{|url| yield url[:url], url[:indices].first, url[:indices].last} if block_given?
-      urls
-    end
   end
 end

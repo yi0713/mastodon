@@ -91,14 +91,32 @@ const redisUrlToClient = async (defaultConfig, redisUrl) => {
 const numWorkers = +process.env.STREAMING_CLUSTER_NUM || (env === 'development' ? 1 : Math.max(os.cpus().length - 1, 1));
 
 /**
+ * Attempts to safely parse a string as JSON, used when both receiving a message
+ * from redis and when receiving a message from a client over a websocket
+ * connection, this is why it accepts a `req` argument.
  * @param {string} json
- * @return {Object.<string, any>|null}
+ * @param {any?} req
+ * @returns {Object.<string, any>|null}
  */
-const parseJSON = (json) => {
+const parseJSON = (json, req) => {
   try {
     return JSON.parse(json);
   } catch (err) {
-    log.error(err);
+    /* FIXME: This logging isn't great, and should probably be done at the
+     * call-site of parseJSON, not in the method, but this would require changing
+     * the signature of parseJSON to return something akin to a Result type:
+     * [Error|null, null|Object<string,any}], and then handling the error
+     * scenarios.
+     */
+    if (req) {
+      if (req.accountId) {
+        log.warn(req.requestId, `Error parsing message from user ${req.accountId}: ${err}`);
+      } else {
+        log.silly(req.requestId, `Error parsing message from ${req.remoteAddress}: ${err}`);
+      }
+    } else {
+      log.warn(`Error parsing message from redis: ${err}`);
+    }
     return null;
   }
 };
@@ -141,7 +159,7 @@ const startWorker = async (workerId) => {
 
   const app = express();
 
-  app.set('trusted proxy', process.env.TRUSTED_PROXY_IP || 'loopback,uniquelocal');
+  app.set('trust proxy', process.env.TRUSTED_PROXY_IP ? process.env.TRUSTED_PROXY_IP.split(/(?:\s*,\s*|\s+)/) : 'loopback,uniquelocal');
 
   const pgPool = new pg.Pool(Object.assign(pgConfigs[env], dbUrlToConfig(process.env.DATABASE_URL)));
   const server = http.createServer(app);
@@ -161,6 +179,11 @@ const startWorker = async (workerId) => {
   }
 
   const redisPrefix = redisNamespace ? `${redisNamespace}:` : '';
+
+  /**
+   * @type {Object.<string, Array.<function(Object<string, any>): void>>}
+   */
+  const subs = {};
 
   const redisSubscribeClient = await redisUrlToClient(redisParams, process.env.REDIS_URL);
   const redisClient = await redisUrlToClient(redisParams, process.env.REDIS_URL);
@@ -186,23 +209,59 @@ const startWorker = async (workerId) => {
   };
 
   /**
+   * @param {string} message
    * @param {string} channel
-   * @param {function(string): void} callback
    */
-  const subscribe = (channel, callback) => {
-    log.silly(`Adding listener for ${channel}`);
+  const onRedisMessage = (message, channel) => {
+    const callbacks = subs[channel];
 
-    redisSubscribeClient.subscribe(channel, callback);
+    log.silly(`New message on channel ${channel}`);
+
+    if (!callbacks) {
+      return;
+    }
+
+    const json = parseJSON(message, null);
+    if (!json) return;
+
+    callbacks.forEach(callback => callback(json));
   };
 
   /**
    * @param {string} channel
    * @param {function(string): void} callback
    */
+  const subscribe = (channel, callback) => {
+    log.silly(`Adding listener for ${channel}`);
+
+    subs[channel] = subs[channel] || [];
+
+    if (subs[channel].length === 0) {
+      log.verbose(`Subscribe ${channel}`);
+      redisSubscribeClient.subscribe(channel, onRedisMessage);
+    }
+
+    subs[channel].push(callback);
+  };
+
+  /**
+   * @param {string} channel
+   * @param {function(Object<string, any>): void} callback
+   */
   const unsubscribe = (channel, callback) => {
     log.silly(`Removing listener for ${channel}`);
 
-    redisSubscribeClient.unsubscribe(channel, callback);
+    if (!subs[channel]) {
+      return;
+    }
+
+    subs[channel] = subs[channel].filter(item => item !== callback);
+
+    if (subs[channel].length === 0) {
+      log.verbose(`Unsubscribe ${channel}`);
+      redisSubscribeClient.unsubscribe(channel);
+      delete subs[channel];
+    }
   };
 
   const FALSE_VALUES = [
@@ -337,7 +396,7 @@ const startWorker = async (workerId) => {
 
   /**
    * @param {any} req
-   * @return {string}
+   * @returns {string|undefined}
    */
   const channelNameFromPath = req => {
     const { path, query } = req;
@@ -446,15 +505,11 @@ const startWorker = async (workerId) => {
   /**
    * @param {any} req
    * @param {SystemMessageHandlers} eventHandlers
-   * @return {function(string): void}
+   * @returns {function(object): void}
    */
   const createSystemMessageListener = (req, eventHandlers) => {
     return message => {
-      const json = parseJSON(message);
-
-      if (!json) return;
-
-      const { event } = json;
+      const { event } = message;
 
       log.silly(req.requestId, `System message for ${req.accountId}: ${event}`);
 
@@ -565,19 +620,16 @@ const startWorker = async (workerId) => {
    * @param {function(string, string): void} output
    * @param {function(string[], function(string): void): void} attachCloseHandler
    * @param {boolean=} needsFiltering
-   * @return {function(string): void}
+   * @returns {function(object): void}
    */
   const streamFrom = (ids, req, output, attachCloseHandler, needsFiltering = false) => {
     const accountId = req.accountId || req.remoteAddress;
 
     log.verbose(req.requestId, `Starting stream from ${ids.join(', ')} for ${accountId}`);
 
+    // Currently message is of type string, soon it'll be Record<string, any>
     const listener = message => {
-      const json = parseJSON(message);
-
-      if (!json) return;
-
-      const { event, payload, queued_at } = json;
+      const { event, payload, queued_at } = message;
 
       const transmit = () => {
         const now = new Date().getTime();
@@ -1036,8 +1088,15 @@ const startWorker = async (workerId) => {
     ws.on('close', onEnd);
     ws.on('error', onEnd);
 
-    ws.on('message', data => {
-      const json = parseJSON(data);
+    ws.on('message', (data, isBinary) => {
+      if (isBinary) {
+        log.warn('socket', 'Received binary data, closing connection');
+        ws.close(1003, 'The mastodon streaming server does not support binary messages');
+        return;
+      }
+      const message = data.toString('utf8');
+
+      const json = parseJSON(message, session.request);
 
       if (!json) return;
 
