@@ -1,17 +1,17 @@
-![Mastodon](https://i.imgur.com/NhZc40l.png)
-========
+<h1><picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./lib/assets/wordmark.dark.png?raw=true">
+  <source media="(prefers-color-scheme: light)" srcset="./lib/assets/wordmark.light.png?raw=true">
+  <img alt="Mastodon" src="./lib/assets/wordmark.light.png?raw=true" height="34">
+</picture></h1>
 
 [![GitHub release](https://img.shields.io/github/release/mastodon/mastodon.svg)][releases]
-[![Build Status](https://img.shields.io/circleci/project/github/mastodon/mastodon.svg)][circleci]
-[![Code Climate](https://img.shields.io/codeclimate/maintainability/mastodon/mastodon.svg)][code_climate]
+[![Ruby Testing](https://github.com/mastodon/mastodon/actions/workflows/test-ruby.yml/badge.svg)](https://github.com/mastodon/mastodon/actions/workflows/test-ruby.yml)
 [![Crowdin](https://d322cqt584bo4o.cloudfront.net/mastodon/localized.svg)][crowdin]
 
 [releases]: https://github.com/mastodon/mastodon/releases
-[circleci]: https://circleci.com/gh/mastodon/mastodon
-[code_climate]: https://codeclimate.com/github/mastodon/mastodon
 [crowdin]: https://crowdin.com/project/mastodon
 
-Mastodon is a **free, open-source social network server** based on ActivityPub where users can follow friends and discover new ones. On Mastodon, users can publish anything they want: links, pictures, text, video. All Mastodon servers are interoperable as a federated network (users on one server can seamlessly communicate with users from another one, including non-Mastodon software that implements ActivityPub)!
+Mastodon is a **free, open-source social network server** based on ActivityPub where users can follow friends and discover new ones. On Mastodon, users can publish anything they want: links, pictures, text, video. All Mastodon servers are interoperable as a federated network (users on one server can seamlessly communicate with users from another one, including non-Mastodon software that implements ActivityPub!)
 
 Click below to **learn more** in a video:
 
@@ -26,6 +26,7 @@ Click below to **learn more** in a video:
 - [View sponsors](https://joinmastodon.org/sponsors)
 - [Blog](https://blog.joinmastodon.org)
 - [Documentation](https://docs.joinmastodon.org)
+- [Roadmap](https://joinmastodon.org/roadmap)
 - [Official Docker image](https://github.com/mastodon/mastodon/pkgs/container/mastodon)
 - [Browse Mastodon servers](https://joinmastodon.org/communities)
 - [Browse Mastodon apps](https://joinmastodon.org/apps)
@@ -34,7 +35,7 @@ Click below to **learn more** in a video:
 
 ## Features
 
-<img src="https://docs.joinmastodon.org/elephant.svg" align="right" width="30%" />
+<img src="/app/javascript/images/elephant_ui_working.svg?raw=true" align="right" width="30%" />
 
 ### No vendor lock-in: Fully interoperable with any conforming platform
 
@@ -68,10 +69,10 @@ Mastodon acts as an OAuth2 provider, so 3rd party apps can use the REST and Stre
 
 - **PostgreSQL** 9.5+
 - **Redis** 4+
-- **Ruby** 2.5+
-- **Node.js** 12+
+- **Ruby** 2.7+
+- **Node.js** 14+
 
-The repository includes deployment configurations for **Docker and docker-compose** as well as specific platforms like **Heroku**, **Scalingo**, and **Nanobox**. The [**standalone** installation guide](https://docs.joinmastodon.org/admin/install/) is available in the documentation.
+The repository includes deployment configurations for **Docker and docker-compose** as well as specific platforms like **Heroku**, **Scalingo**, and **Nanobox**. For Helm charts, reference the [mastodon/chart repository](https://github.com/mastodon/chart). The [**standalone** installation guide](https://docs.joinmastodon.org/admin/install/) is available in the documentation.
 
 A **Vagrant** configuration is included for development purposes. To use it, complete following steps:
 
@@ -80,6 +81,16 @@ A **Vagrant** configuration is included for development purposes. To use it, com
 - Run `vagrant up`
 - Run `vagrant ssh -c "cd /vagrant && foreman start"`
 - Open `http://mastodon.local` in your browser
+
+### Getting Started with GitHub Codespaces
+
+To get started, create a codespace for this repository by clicking this 👇
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=52281283)
+
+A codespace will open in a web-based version of Visual Studio Code. The [dev container](.devcontainer/devcontainer.json) is fully configured with software needed for this project.
+
+**Note**: Dev containers is an open spec which is supported by [GitHub Codespaces](https://github.com/codespaces) and [other tools](https://containers.dev/supporting).
 
 ## Contributing
 

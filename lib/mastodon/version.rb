@@ -5,23 +5,23 @@ module Mastodon
     module_function
 
     def major
-      3
+      4
     end
 
     def minor
-      5
+      1
     end
 
     def patch
-      9
+      4
     end
 
     def flags
-      ''
+      ENV.fetch('MASTODON_VERSION_FLAGS', '')
     end
 
     def suffix
-      ''
+      ENV.fetch('MASTODON_VERSION_SUFFIX', '')
     end
 
     def to_a

@@ -11,13 +11,25 @@ end
 module RecommendedComponent
   def recommended(_wrapper_options = nil)
     return unless options[:recommended]
-    options[:label_text] = ->(raw_label_text, _required_label_text, _label_present) { safe_join([raw_label_text, ' ', content_tag(:span, I18n.t('simple_form.recommended'), class: 'recommended')]) }
+
+    key = options[:recommended].is_a?(Symbol) ? options[:recommended] : :recommended
+    options[:label_text] = ->(raw_label_text, _required_label_text, _label_present) { safe_join([raw_label_text, ' ', content_tag(:span, I18n.t(key, scope: 'simple_form'), class: key)]) }
+
     nil
+  end
+end
+
+module WarningHintComponent
+  def warning_hint(_wrapper_options = nil)
+    @warning_hint ||= begin
+      options[:warning_hint].to_s.html_safe if options[:warning_hint].present?
+    end
   end
 end
 
 SimpleForm.include_component(AppendComponent)
 SimpleForm.include_component(RecommendedComponent)
+SimpleForm.include_component(WarningHintComponent)
 
 SimpleForm.setup do |config|
   # Wrappers are used by the form builder to generate a
@@ -98,6 +110,7 @@ SimpleForm.setup do |config|
     b.use :html5
     b.use :label
     b.use :hint, wrap_with: { tag: :span, class: :hint }
+    b.use :warning_hint, wrap_with: { tag: :span, class: [:hint, 'warning-hint'] }
     b.use :input, wrap_with: { tag: :div, class: :label_input }
     b.use :error, wrap_with: { tag: :span, class: :error }
   end

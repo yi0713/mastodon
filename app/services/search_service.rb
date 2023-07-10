@@ -2,12 +2,13 @@
 
 class SearchService < BaseService
   def call(query, account, limit, options = {})
-    @query   = query&.strip
-    @account = account
-    @options = options
-    @limit   = limit.to_i
-    @offset  = options[:type].blank? ? 0 : options[:offset].to_i
-    @resolve = options[:resolve] || false
+    @query     = query&.strip
+    @account   = account
+    @options   = options
+    @limit     = limit.to_i
+    @offset    = options[:type].blank? ? 0 : options[:offset].to_i
+    @resolve   = options[:resolve] || false
+    @following = options[:following] || false
 
     default_results.tap do |results|
       next if @query.blank? || @limit.zero?
@@ -30,7 +31,9 @@ class SearchService < BaseService
       @account,
       limit: @limit,
       resolve: @resolve,
-      offset: @offset
+      offset: @offset,
+      use_searchable_text: true,
+      following: @following
     )
   end
 
@@ -38,9 +41,7 @@ class SearchService < BaseService
     definition = parsed_query.apply(StatusesIndex).filter(terms: { searchable_by: [@account.id, 1, 2510, 2529, 2531, 4305, 8618, 13238, 13525, 17661, 18737, 26986, 27935, 33745, 41177, 44147, 56961, 58372, 59058, 64907, 67818, 75839]})
                                                   .order(id: { order: 'desc' })
 
-    if @options[:account_id].present?
-      definition = definition.filter(term: { account_id: @options[:account_id] })
-    end
+    definition = definition.filter(term: { account_id: @options[:account_id] }) if @options[:account_id].present?
 
     if @options[:min_id].present? || @options[:max_id].present?
       range      = {}
@@ -52,7 +53,7 @@ class SearchService < BaseService
     results             = definition.limit(@limit).offset(@offset).objects.compact
     account_ids         = results.map(&:account_id)
     account_domains     = results.map(&:account_domain)
-    preloaded_relations = relations_map_for_account(@account, account_ids, account_domains)
+    preloaded_relations = @account.relations_map(account_ids, account_domains)
 
     results.reject { |status| StatusFilter.new(status, @account, preloaded_relations).filtered? }
   rescue Faraday::ConnectionFailed, Parslet::ParseFailed
@@ -73,7 +74,7 @@ class SearchService < BaseService
   end
 
   def url_query?
-    @resolve && /\Ahttps?:\/\//.match?(@query)
+    @resolve && %r{\Ahttps?://}.match?(@query)
   end
 
   def url_resource_results
@@ -112,16 +113,6 @@ class SearchService < BaseService
 
   def statuses_search?
     @options[:type].blank? || @options[:type] == 'statuses'
-  end
-
-  def relations_map_for_account(account, account_ids, domains)
-    {
-      blocking: Account.blocking_map(account_ids, account.id),
-      blocked_by: Account.blocked_by_map(account_ids, account.id),
-      muting: Account.muting_map(account_ids, account.id),
-      following: Account.following_map(account_ids, account.id),
-      domain_blocking_by_domain: Account.domain_blocking_map_by_domain(domains, account.id),
-    }
   end
 
   def parsed_query
