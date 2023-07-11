@@ -2,14 +2,12 @@
 @import 'pink/variables';
 @import 'fonts/roboto';
 @import 'fonts/roboto-mono';
-@import 'fonts/montserrat';
 
 @import 'white/reset';
 @import 'white/basics';
+@import 'white/branding';
 @import 'white/containers';
 @import 'mastodon/lists';
-@import 'white/footer';
-@import 'mastodon/compact_header';
 @import 'white/widgets';
 @import 'white/forms';
 @import 'white/accounts';
@@ -17,7 +15,6 @@
 @import 'white/boost';
 @import 'white/components';
 @import 'white/polls';
-@import 'white/introduction';
 @import 'mastodon/modal';
 @import 'white/emoji_picker';
 @import 'white/about';
@@ -25,6 +22,8 @@
 @import 'white/admin';
 @import 'white/dashboard';
 @import 'white/rtl';
+@import 'white/accessibility';
+@import 'white/rich_text';
 
 $wallpaper: "pink/background.jpg";
 @import 'wallpaper-light';
