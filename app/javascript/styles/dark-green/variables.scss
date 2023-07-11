@@ -1,60 +1,57 @@
-// Theme: dark-green
+// Dependent colors
+$black: #000000;
+$white: #ffffff;
 
-// Commonly used web colors
-$black: #000000;            // Black
-$white: #ffffff;            // White
-$success-green: #79bd9a !default;     // Padua
-$error-red: #df405a !default;         // Cerise
-$warning-red: #ff5050 !default;       // Sunset Orange
-$gold-star: #ca8f04 !default;         // Dark Goldenrod
+$classic-base-color: #282c37;
+$classic-primary-color: #9baec8;
+$classic-secondary-color: #d9e1e8;
+$classic-highlight-color: #6364ff;
 
-$red-bookmark: $warning-red;
+$blurple-600: #563acc; // Iris
+$blurple-500: #6364ff; // Brand purple
+$blurple-300: #858afa; // Faded Blue
+$grey-600: #4e4c5a; // Trout
+$grey-100: #dadaf3; // Topaz
 
-// Values from the classic Mastodon UI
-$classic-base-color: #20372c;
-$classic-primary-color: #90c8ae;
-$classic-secondary-color: #d0e8e1;
-$classic-highlight-color: rgba(#20d990, 0.7);
+// Differences
+$success-green: lighten(#3c754d, 8%);
 
-// Variables for defaults in UI
-$base-shadow-color: $black !default;
-$base-overlay-background: $black !default;
-$base-border-color: $white !default;
-$simple-background-color: $white !default;
+$base-overlay-background: $white !default;
 $valid-value-color: $success-green !default;
-$error-value-color: $error-red !default;
 
-// Tell UI to use selected colors
-$ui-base-color: $classic-base-color !default;                  // Darkest
-$ui-base-lighter-color: lighten($ui-base-color, 36%) !default; // Lighter darkest
-$ui-primary-color: $classic-primary-color !default;            // Lighter
-$ui-secondary-color: $classic-secondary-color !default;        // Lightest
+$ui-base-color: $classic-secondary-color !default;
+$ui-base-lighter-color: #b0c0cf;
+$ui-primary-color: #9bcbed;
+$ui-secondary-color: $classic-base-color !default;
 $ui-highlight-color: $classic-highlight-color !default;
 
-// Variables for texts
-$primary-text-color: $white !default;
-$darker-text-color: $ui-primary-color !default;
-$dark-text-color: $ui-base-lighter-color !default;
-$secondary-text-color: $ui-secondary-color !default;
-$highlight-text-color: $ui-highlight-color !default;
-$action-button-color: rgba($white, 0.4);
-$passive-text-color: $gold-star !default;
-$active-passive-text-color: $success-green !default;
-// For texts on inverted backgrounds
-$inverted-text-color: $ui-base-color !default;
-$lighter-text-color: $ui-base-lighter-color !default;
-$light-text-color: $ui-primary-color !default;
+$ui-button-secondary-color: $grey-600 !default;
+$ui-button-secondary-border-color: $grey-600 !default;
+$ui-button-secondary-focus-color: $white !default;
 
-// Language codes that uses CJK fonts
-$cjk-langs: ja, ko, zh-CN, zh-HK, zh-TW;
+$ui-button-tertiary-color: $blurple-500 !default;
+$ui-button-tertiary-border-color: $blurple-500 !default;
 
-// Variables for components
-$media-modal-media-max-width: 100%;
-// put margins on top and bottom of image to avoid the screen covered by image.
-$media-modal-media-max-height: 80%;
+$primary-text-color: $black !default;
+$darker-text-color: $classic-base-color !default;
+$highlight-text-color: darken($ui-highlight-color, 8%) !default;
+$dark-text-color: #444b5d;
+$action-button-color: #606984;
 
-$no-gap-breakpoint: 415px;
+$inverted-text-color: $black !default;
+$lighter-text-color: $classic-base-color !default;
+$light-text-color: #444b5d;
 
-$font-sans-serif: 'mastodon-font-sans-serif' !default;
-$font-display: 'mastodon-font-display' !default;
-$font-monospace: 'mastodon-font-monospace' !default;
+// Newly added colors
+$account-background-color: $white !default;
+
+// Invert darkened and lightened colors
+@function darken($color, $amount) {
+  @return hsl(hue($color), saturation($color), lightness($color) + $amount);
+}
+
+@function lighten($color, $amount) {
+  @return hsl(hue($color), saturation($color), lightness($color) - $amount);
+}
+
+$emojis-requiring-inversion: 'chains';
