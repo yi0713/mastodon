@@ -961,7 +961,6 @@ el:
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Μπορεί να συνεισφέρει ο οποιοσδήποτε.
     sensitive_content: Ευαίσθητο περιεχόμενο
-    toot_layout: Διαρρύθμιση αναρτήσεων
   application_mailer:
     notification_preferences: Αλλαγή προτιμήσεων email
     salutation: "%{name},"
@@ -1570,7 +1569,6 @@ el:
     show_newer: Εμφάνιση νεότερων
     show_older: Εμφάνιση παλαιότερων
     show_thread: Εμφάνιση νήματος
-    sign_in_to_participate: Συνδέσου για να συμμετάσχεις στη συζήτηση
     title: '%{name}: "%{quote}"'
     visibilities:
       direct: Άμεση
@@ -1616,8 +1614,6 @@ el:
     min_reblogs: Διατήρηση αναρτήσεων που έχουν ενισχυθεί τουλάχιστον
     min_reblogs_hint: Δεν διαγράφει καμία από τις δημοσιεύσεις σας που έχει λάβει τουλάχιστον αυτόν τον αριθμό ενισχύσεων. Αφήστε κενό για να διαγράψετε δημοσιεύσεις ανεξάρτητα από τον αριθμό των ενισχύσεων
   stream_entries:
-    pinned: Καρφιτσωμένη ανάρτηση
-    reblogged: ενισχύθηκε
     sensitive_content: Ευαίσθητο περιεχόμενο
   strikes:
     errors:

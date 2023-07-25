@@ -955,7 +955,6 @@ vi:
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Ai cũng có thể đóng góp.
     sensitive_content: Nội dung nhạy cảm
-    toot_layout: Tút
   application_mailer:
     notification_preferences: Thay đổi tùy chọn email
     salutation: "%{name},"
@@ -1602,7 +1601,6 @@ vi:
     show_newer: Mới hơn
     show_older: Cũ hơn
     show_thread: Trích nguyên văn
-    sign_in_to_participate: Đăng nhập để trả lời tút này
     title: '%{name}: "%{quote}"'
     visibilities:
       direct: Nhắn riêng
@@ -1648,8 +1646,6 @@ vi:
     min_reblogs: Giữ những tút đã đăng lại lâu hơn
     min_reblogs_hint: Những tút có lượt đăng lại nhiều hơn số này sẽ không bị xóa. Để trống nếu bạn muốn xóa hết
   stream_entries:
-    pinned: Tút đã ghim
-    reblogged: đăng lại
     sensitive_content: NSFW
   strikes:
     errors:

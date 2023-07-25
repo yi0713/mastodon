@@ -973,7 +973,6 @@ hu:
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Bárki közreműködhet.
     sensitive_content: Kényes tartalom
-    toot_layout: Bejegyzések elrendezése
   application_mailer:
     notification_preferences: E-mail beállítások módosítása
     salutation: "%{name}!"
@@ -1634,7 +1633,6 @@ hu:
     show_newer: Újabbak mutatása
     show_older: Régebbiek mutatása
     show_thread: Szál mutatása
-    sign_in_to_participate: Bejelentkezés a beszélgetésben részvételhez
     title: "%{name}: „%{quote}”"
     visibilities:
       direct: Közvetlen
@@ -1680,8 +1678,6 @@ hu:
     min_reblogs: Bejegyzések megtartása, melyeket többször toltak meg, mint
     min_reblogs_hint: Egyetlen olyan bejegyzésedet sem törli, melyet ennél többször toltak meg. Hagyd üresen, hogy a megtolások számától függetlenül töröljük a bejegyzéseket
   stream_entries:
-    pinned: Kitűzött bejegyzés
-    reblogged: megtolta
     sensitive_content: Kényes tartalom
   strikes:
     errors:

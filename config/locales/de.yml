@@ -973,7 +973,6 @@ de:
       guide_link: https://de.crowdin.com/project/mastodon/de
       guide_link_text: Alle können mitmachen und etwas dazu beitragen.
     sensitive_content: Inhaltswarnung
-    toot_layout: Timeline-Layout
   application_mailer:
     notification_preferences: E-Mail-Einstellungen ändern
     salutation: "%{name},"
@@ -1634,7 +1633,6 @@ de:
     show_newer: Neuere anzeigen
     show_older: Ältere anzeigen
     show_thread: Thread anzeigen
-    sign_in_to_participate: Melde dich an, um an der Unterhaltung teilzunehmen
     title: "%{name}: „%{quote}“"
     visibilities:
       direct: Direktnachricht
@@ -1680,8 +1678,6 @@ de:
     min_reblogs: Beiträge behalten, die mindestens so oft geteilt wurden
     min_reblogs_hint: Löscht keine Beiträge, die mindestens so oft geteilt worden sind. Lass das Feld leer, um alle Beiträge – unabhängig der Anzahl an geteilten Beiträgen – zu löschen
   stream_entries:
-    pinned: Angehefteter Beitrag
-    reblogged: teilte
     sensitive_content: Inhaltswarnung
   strikes:
     errors:

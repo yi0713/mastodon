@@ -973,7 +973,6 @@ gl:
       guide_link: https://crowdin.com/project/mastodon
       guide_link_text: Todas podemos contribuír.
     sensitive_content: Contido sensible
-    toot_layout: Disposición da publicación
   application_mailer:
     notification_preferences: Cambiar os axustes de email
     salutation: "%{name},"
@@ -1634,7 +1633,6 @@ gl:
     show_newer: Mostrar o máis novo
     show_older: Mostrar o máis vello
     show_thread: Amosar fío
-    sign_in_to_participate: Accede e participa na conversa
     title: '%{name}: "%{quote}"'
     visibilities:
       direct: Directa
@@ -1680,8 +1678,6 @@ gl:
     min_reblogs: Manter publicacións promovidas máis de
     min_reblogs_hint: Non elimina ningunha das túas publicacións se foron promovidas máis deste número de veces. Deixa en branco para eliminar publicacións independentemente do seu número de promocións
   stream_entries:
-    pinned: Publicación fixada
-    reblogged: promoveu
     sensitive_content: Contido sensible
   strikes:
     errors:

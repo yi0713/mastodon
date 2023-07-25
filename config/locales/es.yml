@@ -973,7 +973,6 @@ es:
       guide_link: https://es.crowdin.com/project/mastodon
       guide_link_text: Todos pueden contribuir.
     sensitive_content: Contenido sensible
-    toot_layout: Diseño de las publicaciones
   application_mailer:
     notification_preferences: Cambiar preferencias de correo electrónico
     salutation: "%{name}:"
@@ -1634,7 +1633,6 @@ es:
     show_newer: Mostrar más recientes
     show_older: Mostrar más antiguos
     show_thread: Mostrar discusión
-    sign_in_to_participate: Inicia sesión para participar en la conversación
     title: "%{name}: «%{quote}»"
     visibilities:
       direct: Directa
@@ -1680,8 +1678,6 @@ es:
     min_reblogs: Mantener publicaciones reblogueadas más de
     min_reblogs_hint: No borra ninguna de las publicaciones que hayan sido reblogueadas más de este número de veces. Deja en blanco para eliminar publicaciones sin importar el número de reblogueos
   stream_entries:
-    pinned: Publicación fijada
-    reblogged: impulsó
     sensitive_content: Contenido sensible
   strikes:
     errors:

@@ -1009,7 +1009,6 @@ pl:
       guide_link: https://pl.crowdin.com/project/mastodon
       guide_link_text: Każdy może wnieść swój wkład.
     sensitive_content: Wrażliwa zawartość
-    toot_layout: Wygląd wpisów
   application_mailer:
     notification_preferences: Zmień ustawienia e-maili
     salutation: "%{name},"
@@ -1698,7 +1697,6 @@ pl:
     show_newer: Pokaż nowsze
     show_older: Pokaż starsze
     show_thread: Pokaż wątek
-    sign_in_to_participate: Zaloguj się, aby udzielić się w tej konwersacji
     title: '%{name}: "%{quote}"'
     visibilities:
       direct: Bezpośredni
@@ -1744,8 +1742,6 @@ pl:
     min_reblogs: Utrzymuj posty wzmocnione więcej niż
     min_reblogs_hint: Nie usuwa żadnego z Twoich wpisów, które zostały wzmocnione więcej niż tyle razy. Pozostaw puste, aby usunąć posty bez względu na ich liczbę wzmocnień
   stream_entries:
-    pinned: Przypięty wpis
-    reblogged: podbił
     sensitive_content: Wrażliwa zawartość
   strikes:
     errors:
