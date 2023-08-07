@@ -58,6 +58,7 @@ gem 'kaminari', '~> 1.2'
 gem 'link_header', '~> 0.0'
 gem 'mime-types', '~> 3.4.1', require: 'mime/types/columnar'
 gem 'nokogiri', '~> 1.15'
+gem 'nsa', github: 'jhawthorn/nsa', ref: 'e020fcc3a54d993ab45b7194d89ab720296c111b'
 gem 'oj', '~> 3.14'
 gem 'ox', '~> 2.14'
 gem 'parslet'
@@ -99,9 +100,6 @@ gem 'rdf-normalize', '~> 0.5'
 gem 'private_address_check', '~> 0.5'
 
 group :test do
-  # RSpec runner for rails
-  gem 'rspec-rails', '~> 6.0'
-
   # Used to split testing into chunks in CI
   gem 'rspec_chunked', '~> 0.6'
 
@@ -113,6 +111,10 @@ group :test do
 
   # Browser integration testing
   gem 'capybara', '~> 3.39'
+  gem 'selenium-webdriver'
+
+  # Used to reset the database between system tests
+  gem 'database_cleaner-active_record'
 
   # Used to mock environment variables
   gem 'climate_control', '~> 0.2'
@@ -173,10 +175,19 @@ group :development do
 
   # Validate missing i18n keys
   gem 'i18n-tasks', '~> 1.0', require: false
+end
 
+group :development, :test do
   # Profiling tools
   gem 'memory_profiler', require: false
+  gem 'ruby-prof', require: false
   gem 'stackprof', require: false
+  gem 'test-prof'
+end
+
+group :development, :test do
+  # RSpec runner for rails
+  gem 'rspec-rails', '~> 6.0'
 end
 
 group :production do

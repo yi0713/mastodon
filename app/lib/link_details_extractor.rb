@@ -113,6 +113,7 @@ class LinkDetailsExtractor
       title: title || '',
       description: description || '',
       image_remote_url: image,
+      image_description: image_alt || '',
       type: type,
       link_type: link_type,
       width: width || 0,
@@ -124,7 +125,7 @@ class LinkDetailsExtractor
       author_url: author_url || '',
       embed_url: embed_url || '',
       language: language,
-      created_at: published_at.presence || Time.now.utc,
+      published_at: published_at.presence,
     }
   end
 
@@ -166,6 +167,10 @@ class LinkDetailsExtractor
 
   def image
     valid_url_or_nil(opengraph_tag('og:image'))
+  end
+
+  def image_alt
+    opengraph_tag('og:image:alt')
   end
 
   def canonical_url
