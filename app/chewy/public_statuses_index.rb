@@ -2,6 +2,15 @@
 
 class PublicStatusesIndex < Chewy::Index
   settings index: index_preset(refresh_interval: '30s', number_of_shards: 5), analysis: {
+    tokenizer: {
+      sudachi_tokenizer: {
+        type: 'sudachi_tokenizer',
+        discard_punctuation: true,
+        resources_path: '/etc/elasticsearch',
+        settings_path: '/etc/elasticsearch/sudachi.json',
+      },
+    },
+
     filter: {
       english_stop: {
         type: 'stop',
@@ -26,16 +35,15 @@ class PublicStatusesIndex < Chewy::Index
       },
 
       content: {
-        tokenizer: 'standard',
         filter: %w(
           lowercase
-          asciifolding
           cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
+          sudachi_part_of_speech
+          sudachi_ja_stop
+          sudachi_baseform
         ),
+        tokenizer: 'sudachi_tokenizer',
+        type: 'custom',
       },
 
       hashtag: {

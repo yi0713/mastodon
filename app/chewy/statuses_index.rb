@@ -3,7 +3,7 @@
 class StatusesIndex < Chewy::Index
   include FormattingHelper
 
-  settings index: index_preset(refresh_interval: '30s', number_of_shards: 5, analysis: {
+  settings index: index_preset(refresh_interval: '30s', number_of_shards: 5), analysis: {
     tokenizer: {
       sudachi_tokenizer: {
         type: 'sudachi_tokenizer',

@@ -2,6 +2,15 @@
 
 class AccountsIndex < Chewy::Index
   settings index: index_preset(refresh_interval: '30s'), analysis: {
+    tokenizer: {
+      sudachi_tokenizer: {
+        type: 'sudachi_tokenizer',
+        discard_punctuation: true,
+        resources_path: '/etc/elasticsearch',
+        settings_path: '/etc/elasticsearch/sudachi.json',
+      },
+    },
+
     filter: {
       english_stop: {
         type: 'stop',
@@ -20,17 +29,16 @@ class AccountsIndex < Chewy::Index
     },
 
     analyzer: {
-      natural: {
-        tokenizer: 'standard',
+      content: {
         filter: %w(
           lowercase
-          asciifolding
           cjk_width
-          elision
-          english_possessive_stemmer
-          english_stop
-          english_stemmer
+          sudachi_part_of_speech
+          sudachi_ja_stop
+          sudachi_baseform
         ),
+        tokenizer: 'sudachi_tokenizer',
+        type: 'custom',
       },
 
       verbatim: {
@@ -63,6 +71,6 @@ class AccountsIndex < Chewy::Index
     field(:last_status_at, type: 'date', value: ->(account) { account.last_status_at || account.created_at })
     field(:display_name, type: 'text', analyzer: 'verbatim') { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
     field(:username, type: 'text', analyzer: 'verbatim', value: ->(account) { [account.username, account.domain].compact.join('@') }) { field :edge_ngram, type: 'text', analyzer: 'edge_ngram', search_analyzer: 'verbatim' }
-    field(:text, type: 'text', analyzer: 'verbatim', value: ->(account) { account.searchable_text }) { field :stemmed, type: 'text', analyzer: 'natural' }
+    field(:text, type: 'text', analyzer: 'verbatim', value: ->(account) { account.searchable_text }) { field :stemmed, type: 'text', analyzer: 'content' }
   end
 end
