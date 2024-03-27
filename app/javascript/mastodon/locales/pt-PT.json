@@ -483,6 +483,8 @@
   "notifications.column_settings.admin.sign_up": "Novas inscrições:",
   "notifications.column_settings.alert": "Notificações no ambiente de trabalho",
   "notifications.column_settings.favourite": "Favoritos:",
+  "notifications.column_settings.filter_bar.advanced": "Mostrar todas as categorias",
+  "notifications.column_settings.filter_bar.category": "Barra de filtros rápidos",
   "notifications.column_settings.follow": "Novos seguidores:",
   "notifications.column_settings.follow_request": "Novos pedidos de seguidor:",
   "notifications.column_settings.mention": "Menções:",
