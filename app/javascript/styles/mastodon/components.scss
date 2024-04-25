@@ -2015,7 +2015,19 @@ a .account__avatar {
   white-space: nowrap;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 8px;
+
+  .icon-button {
+    border: 1px solid var(--background-border-color);
+    border-radius: 4px;
+    box-sizing: content-box;
+    padding: 5px;
+
+    .icon {
+      width: 24px;
+      height: 24px;
+    }
+  }
 }
 
 .account-authorize {
@@ -7863,8 +7875,13 @@ noscript {
         }
       }
 
-      @container account-header (max-width: 372px) {
-        .optional {
+      .optional {
+        @container account-header (max-width: 372px) {
+          display: none;
+        }
+
+        // Fallback for older browsers with no container queries support
+        @media screen and (max-width: 372px + 55px) {
           display: none;
         }
       }
