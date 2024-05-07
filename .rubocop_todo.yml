@@ -42,14 +42,6 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/NestedGroups:
   Max: 6
 
-# Configuration parameters: Include.
-# Include: app/models/**/*.rb
-Rails/HasAndBelongsToMany:
-  Exclude:
-    - 'app/models/concerns/account/associations.rb'
-    - 'app/models/status.rb'
-    - 'app/models/tag.rb'
-
 Rails/OutputSafety:
   Exclude:
     - 'config/initializers/simple_form.rb'
@@ -204,14 +196,6 @@ Style/RedundantFetchBlock:
 Style/SafeNavigation:
   Exclude:
     - 'app/models/concerns/account/finder_concern.rb'
-
-# This cop supports safe autocorrection (--autocorrect).
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: only_raise, only_fail, semantic
-Style/SignalException:
-  Exclude:
-    - 'lib/devise/strategies/two_factor_ldap_authenticatable.rb'
-    - 'lib/devise/strategies/two_factor_pam_authenticatable.rb'
 
 # This cop supports unsafe autocorrection (--autocorrect-all).
 # Configuration parameters: Mode.
