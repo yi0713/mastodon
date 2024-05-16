@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
+ActiveRecord::Schema[7.1].define(version: 2024_05_10_192043) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -166,11 +166,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.string "url"
     t.string "avatar_file_name"
     t.string "avatar_content_type"
-    t.bigint "avatar_file_size"
+    t.integer "avatar_file_size"
     t.datetime "avatar_updated_at", precision: nil
     t.string "header_file_name"
     t.string "header_content_type"
-    t.bigint "header_file_size"
+    t.integer "header_file_size"
     t.datetime "header_updated_at", precision: nil
     t.string "avatar_remote_url"
     t.boolean "locked", default: false, null: false
@@ -368,7 +368,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.string "domain"
     t.string "image_file_name"
     t.string "image_content_type"
-    t.bigint "image_file_size"
+    t.integer "image_file_size"
     t.datetime "image_updated_at", precision: nil
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -558,7 +558,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.datetime "updated_at", precision: nil, null: false
     t.string "data_file_name"
     t.string "data_content_type"
-    t.bigint "data_file_size"
+    t.integer "data_file_size"
     t.datetime "data_updated_at", precision: nil
     t.bigint "account_id", null: false
     t.boolean "overwrite", default: false, null: false
@@ -635,7 +635,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.bigint "status_id"
     t.string "file_file_name"
     t.string "file_content_type"
-    t.bigint "file_file_size"
+    t.integer "file_file_size"
     t.datetime "file_updated_at", precision: nil
     t.string "remote_url", default: "", null: false
     t.datetime "created_at", precision: nil, null: false
@@ -651,7 +651,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.integer "file_storage_schema_version"
     t.string "thumbnail_file_name"
     t.string "thumbnail_content_type"
-    t.bigint "thumbnail_file_size"
+    t.integer "thumbnail_file_size"
     t.datetime "thumbnail_updated_at", precision: nil
     t.string "thumbnail_remote_url"
     t.index ["account_id", "status_id"], name: "index_media_attachments_on_account_id_and_status_id", order: { status_id: :desc }
@@ -855,7 +855,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.string "description", default: "", null: false
     t.string "image_file_name"
     t.string "image_content_type"
-    t.bigint "image_file_size"
+    t.integer "image_file_size"
     t.datetime "image_updated_at", precision: nil
     t.integer "type", default: 0, null: false
     t.text "html", default: "", null: false
@@ -993,7 +993,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
     t.string "var", default: "", null: false
     t.string "file_file_name"
     t.string "file_content_type"
-    t.bigint "file_file_size"
+    t.integer "file_file_size"
     t.datetime "file_updated_at", precision: nil
     t.json "meta"
     t.datetime "created_at", precision: nil, null: false
@@ -1335,7 +1335,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_22_161611) do
   add_foreign_key "mutes", "accounts", name: "fk_b8d8daf315", on_delete: :cascade
   add_foreign_key "notification_permissions", "accounts"
   add_foreign_key "notification_permissions", "accounts", column: "from_account_id"
-  add_foreign_key "notification_policies", "accounts"
+  add_foreign_key "notification_policies", "accounts", on_delete: :cascade
   add_foreign_key "notification_requests", "accounts", column: "from_account_id", on_delete: :cascade
   add_foreign_key "notification_requests", "accounts", on_delete: :cascade
   add_foreign_key "notification_requests", "statuses", column: "last_status_id", on_delete: :nullify
