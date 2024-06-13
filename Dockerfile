@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1.7
 
+# This file is designed for production server deployment, not local development work
+# For a containerized local dev environment, see: https://github.com/mastodon/mastodon/blob/main/README.md#docker
+
 # Please see https://docs.docker.com/engine/reference/builder for information about
 # the extended buildx capabilities used in this file.
 # Make sure multiarch TARGETPLATFORM is available for interpolation
@@ -8,8 +11,10 @@ ARG TARGETPLATFORM=${TARGETPLATFORM}
 ARG BUILDPLATFORM=${BUILDPLATFORM}
 
 # Ruby image to use for base image, change with [--build-arg RUBY_VERSION="3.3.x"]
+# renovate: datasource=docker depName=docker.io/ruby
 ARG RUBY_VERSION="3.3.2"
 # # Node version to use in base image, change with [--build-arg NODE_MAJOR_VERSION="20"]
+# renovate: datasource=node-version depName=node
 ARG NODE_MAJOR_VERSION="20"
 # Debian image to use for base image, change with [--build-arg DEBIAN_VERSION="bookworm"]
 ARG DEBIAN_VERSION="bookworm"
@@ -43,6 +48,8 @@ ENV \
 # Apply Mastodon version information
   MASTODON_VERSION_PRERELEASE="${MASTODON_VERSION_PRERELEASE}" \
   MASTODON_VERSION_METADATA="${MASTODON_VERSION_METADATA}" \
+# Enable libvips
+  MASTODON_USE_LIBVIPS=true \
 # Apply Mastodon static files and YJIT options
   RAILS_SERVE_STATIC_FILES=${RAILS_SERVE_STATIC_FILES} \
   RUBY_YJIT_ENABLE=${RUBY_YJIT_ENABLE} \
@@ -97,7 +104,7 @@ RUN \
     curl \
     ffmpeg \
     file \
-    imagemagick \
+    libvips42 \
     libjemalloc2 \
     patchelf \
     procps \
@@ -205,11 +212,7 @@ ARG TARGETPLATFORM
 
 RUN \
 # Use Ruby on Rails to create Mastodon assets
-  ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=precompile_placeholder \
-  ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=precompile_placeholder \
-  ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=precompile_placeholder \
-  OTP_SECRET=precompile_placeholder \
-  SECRET_KEY_BASE=precompile_placeholder \
+  SECRET_KEY_BASE_DUMMY=1 \
   bundle exec rails assets:precompile; \
 # Cleanup temporary files
   rm -fr /opt/mastodon/tmp;

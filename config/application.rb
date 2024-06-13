@@ -27,7 +27,7 @@ require_relative '../lib/sanitize_ext/sanitize_config'
 require_relative '../lib/redis/namespace_extensions'
 require_relative '../lib/paperclip/url_generator_extensions'
 require_relative '../lib/paperclip/attachment_extensions'
-require_relative '../lib/paperclip/lazy_thumbnail'
+
 require_relative '../lib/paperclip/gif_transcoder'
 require_relative '../lib/paperclip/media_type_spoof_detector_extensions'
 require_relative '../lib/paperclip/transcoder'
@@ -60,9 +60,10 @@ Bundler.require(:pam_authentication) if ENV['PAM_ENABLED'] == 'true'
 module Mastodon
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 7.0
+    config.load_defaults 7.1
 
-    config.active_record.marshalling_format_version = 7.1
+    # Explicitly set the cache format version to align with Rails version
+    config.active_support.cache_format_version = 7.1
 
     # Please, add to the `ignore` list any other `lib` subdirectories that do
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
@@ -100,12 +101,21 @@ module Mastodon
 
     config.before_configuration do
       require 'mastodon/redis_config'
+
+      config.x.use_vips = ENV['MASTODON_USE_LIBVIPS'] == 'true'
+
+      if config.x.use_vips
+        require_relative '../lib/paperclip/vips_lazy_thumbnail'
+      else
+        require_relative '../lib/paperclip/lazy_thumbnail'
+      end
     end
 
     config.to_prepare do
       Doorkeeper::AuthorizationsController.layout 'modal'
       Doorkeeper::AuthorizedApplicationsController.layout 'admin'
       Doorkeeper::Application.include ApplicationExtension
+      Doorkeeper::AccessGrant.include AccessGrantExtension
       Doorkeeper::AccessToken.include AccessTokenExtension
       Devise::FailureApp.include AbstractController::Callbacks
       Devise::FailureApp.include Localized
