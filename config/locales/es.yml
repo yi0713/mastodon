@@ -471,6 +471,9 @@ es:
       title: Recomendaciones de cuentas
       unsuppress: Restaurar recomendaciones de cuentas
     instances:
+      audit_log:
+        title: Registros de auditoría recientes
+        view_all: Ver registros de auditoría completos
       availability:
         description_html:
           one: Si el envío al dominio falla <strong>%{count} día</strong> sin éxito, no se harán más intentos de entrega a menos que se reciba un envío <em>desde</em> el dominio.
@@ -882,7 +885,23 @@ es:
         action: Haga clic aquí para obtener más información
         message_html: "<strong>El almacenamiento de su objeto está mal configurado. La privacidad de sus usuarios está en riesgo.</strong>"
     tags:
+      moderation:
+        not_trendable: No puede ser tendencia
+        not_usable: No disponible
+        pending_review: Pendientes de revisión
+        review_requested: Revisión solicitada
+        reviewed: Revisada
+        title: Estado
+        trendable: Puede ser tendencia
+        unreviewed: Sin revisar
+        usable: Disponible
+      name: Nombre
+      newest: Más reciente
+      oldest: Menos reciente
+      reset: Reiniciar
       review: Estado de revisión
+      search: Buscar
+      title: Etiquetas
       updated_msg: Hashtags actualizados exitosamente
     title: Administración
     trends:
