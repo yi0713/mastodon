@@ -1,10 +1,6 @@
 // Notes!
 // Sass color functions, "darken" and "lighten" are automatically replaced.
 
-html {
-  scrollbar-color: $ui-base-color rgba($ui-base-color, 0.25);
-}
-
 .simple_form .button.button-tertiary {
   color: $highlight-text-color;
 }
@@ -50,10 +46,6 @@ html {
 
 .icon-button:disabled {
   color: darken($action-button-color, 25%);
-}
-
-.account__header__bar .avatar .account__avatar {
-  border-color: $white;
 }
 
 .getting-started__footer a {
@@ -212,12 +204,6 @@ html {
 
 .report-modal__container {
   border-top-color: lighten($ui-base-color, 8%);
-}
-
-.column-header__collapsible-inner {
-  background: darken($ui-base-color, 4%);
-  border: 1px solid var(--background-border-color);
-  border-bottom: 0;
 }
 
 .column-settings__hashtags .column-select__option {
@@ -428,9 +414,6 @@ html {
   border-color: transparent transparent $white;
 }
 
-.hero-widget,
-.moved-account-widget,
-.memoriam-widget,
 .activity-stream,
 .nothing-here,
 .directory__tag > a,
@@ -496,11 +479,11 @@ html {
 
 .compose-form .autosuggest-textarea__textarea,
 .compose-form__highlightable,
+.autosuggest-textarea__suggestions,
 .search__input,
 .search__popout,
 .emoji-mart-search input,
 .language-dropdown__dropdown .emoji-mart-search input,
-// .strike-card,
 .poll__option input[type='text'] {
   background: darken($ui-base-color, 10%);
 }
@@ -556,4 +539,29 @@ a.sparkline {
   &:active {
     background: darken($ui-base-color, 10%);
   }
+}
+
+.setting-text {
+  background: darken($ui-base-color, 10%);
+}
+
+.report-dialog-modal__textarea {
+  background: darken($ui-base-color, 10%);
+}
+
+.autosuggest-account {
+  .display-name__account {
+    color: $dark-text-color;
+  }
+}
+
+@supports not selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-color: rgba($action-button-color, 0.25)
+      var(--background-border-color);
+  }
+}
+
+::-webkit-scrollbar-thumb {
+  opacity: 0.25;
 }

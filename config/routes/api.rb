@@ -158,6 +158,7 @@ namespace :api, format: false do
         collection do
           post :accept, to: 'requests#accept_bulk'
           post :dismiss, to: 'requests#dismiss_bulk'
+          get :merged, to: 'requests#merged?'
         end
 
         member do
@@ -335,6 +336,10 @@ namespace :api, format: false do
 
     namespace :admin do
       resources :accounts, only: [:index]
+    end
+
+    namespace :notifications do
+      resource :policy, only: [:show, :update]
     end
   end
 
