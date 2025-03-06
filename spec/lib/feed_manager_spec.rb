@@ -164,6 +164,7 @@ RSpec.describe FeedManager do
         allow(List).to receive(:where).and_return(list)
         status = Fabricate(:status, text: 'I post a lot', account: bob)
         expect(subject.filter?(:home, status, alice)).to be true
+        expect(subject.filter(:home, status, alice)).to be :skip_home
       end
 
       it 'returns true for reblog from followee on exclusive list' do
@@ -174,6 +175,7 @@ RSpec.describe FeedManager do
         status = Fabricate(:status, text: 'I post a lot', account: bob)
         reblog = Fabricate(:status, reblog: status, account: jeff)
         expect(subject.filter?(:home, reblog, alice)).to be true
+        expect(subject.filter(:home, reblog, alice)).to be :skip_home
       end
 
       it 'returns false for post from followee on non-exclusive list' do
@@ -191,6 +193,28 @@ RSpec.describe FeedManager do
         status = Fabricate(:status, text: 'I post a lot', account: bob)
         reblog = Fabricate(:status, reblog: status, account: jeff)
         expect(subject.filter?(:home, reblog, alice)).to be false
+      end
+    end
+
+    context 'with list feed' do
+      let(:list) { Fabricate(:list, account: bob) }
+
+      before do
+        bob.follow!(alice)
+        list.list_accounts.create!(account: alice)
+      end
+
+      it "returns false for followee's status" do
+        status = Fabricate(:status, text: 'Hello world', account: alice)
+
+        expect(subject.filter?(:list, status, list)).to be false
+      end
+
+      it 'returns false for reblog by followee' do
+        status = Fabricate(:status, text: 'Hello world', account: jeff)
+        reblog = Fabricate(:status, reblog: status, account: alice)
+
+        expect(subject.filter?(:list, reblog, list)).to be false
       end
     end
 
@@ -343,16 +367,16 @@ RSpec.describe FeedManager do
   end
 
   describe '#push_to_list' do
-    let(:owner) { Fabricate(:account, username: 'owner') }
+    let(:list_owner) { Fabricate(:account, username: 'list_owner') }
     let(:alice) { Fabricate(:account, username: 'alice') }
     let(:bob)   { Fabricate(:account, username: 'bob') }
     let(:eve)   { Fabricate(:account, username: 'eve') }
-    let(:list)  { Fabricate(:list, account: owner) }
+    let(:list)  { Fabricate(:list, account: list_owner) }
 
     before do
-      owner.follow!(alice)
-      owner.follow!(bob)
-      owner.follow!(eve)
+      list_owner.follow!(alice)
+      list_owner.follow!(bob)
+      list_owner.follow!(eve)
 
       list.accounts << alice
       list.accounts << bob
@@ -377,7 +401,7 @@ RSpec.describe FeedManager do
       end
 
       it 'pushes statuses that are replies to list owner' do
-        status = Fabricate(:status, text: 'Hello world', account: owner)
+        status = Fabricate(:status, text: 'Hello world', account: list_owner)
         reply  = Fabricate(:status, text: 'Nay', thread: status, account: bob)
         expect(subject.push_to_list(list, reply)).to be true
       end
@@ -400,7 +424,7 @@ RSpec.describe FeedManager do
       end
 
       it 'pushes statuses that are replies to list owner' do
-        status = Fabricate(:status, text: 'Hello world', account: owner)
+        status = Fabricate(:status, text: 'Hello world', account: list_owner)
         reply  = Fabricate(:status, text: 'Nay', thread: status, account: bob)
         expect(subject.push_to_list(list, reply)).to be true
       end
@@ -429,7 +453,7 @@ RSpec.describe FeedManager do
       end
 
       it 'pushes statuses that are replies to list owner' do
-        status = Fabricate(:status, text: 'Hello world', account: owner)
+        status = Fabricate(:status, text: 'Hello world', account: list_owner)
         reply  = Fabricate(:status, text: 'Nay', thread: status, account: bob)
         expect(subject.push_to_list(list, reply)).to be true
       end

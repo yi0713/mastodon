@@ -15,15 +15,15 @@ import {
   changeColumnParams,
 } from 'mastodon/actions/columns';
 import { fetchDirectory, expandDirectory } from 'mastodon/actions/directory';
-import Column from 'mastodon/components/column';
+import { Column } from 'mastodon/components/column';
+import type { ColumnRef } from 'mastodon/components/column';
 import { ColumnHeader } from 'mastodon/components/column_header';
 import { LoadMore } from 'mastodon/components/load_more';
 import { LoadingIndicator } from 'mastodon/components/loading_indicator';
 import { RadioButton } from 'mastodon/components/radio_button';
 import ScrollContainer from 'mastodon/containers/scroll_container';
+import { useSearchParam } from 'mastodon/hooks/useSearchParam';
 import { useAppDispatch, useAppSelector } from 'mastodon/store';
-
-import { useSearchParam } from '../../../hooks/useSearchParam';
 
 import { AccountCard } from './components/account_card';
 
@@ -49,7 +49,7 @@ export const Directory: React.FC<{
   const intl = useIntl();
   const dispatch = useAppDispatch();
 
-  const column = useRef<Column>(null);
+  const column = useRef<ColumnRef>(null);
 
   const [orderParam, setOrderParam] = useSearchParam('order');
   const [localParam, setLocalParam] = useSearchParam('local');

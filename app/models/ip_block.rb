@@ -17,13 +17,14 @@ class IpBlock < ApplicationRecord
   CACHE_KEY = 'blocked_ips'
 
   include Expireable
+  include InetContainer
   include Paginable
 
   enum :severity, {
     sign_up_requires_approval: 5000,
     sign_up_block: 5500,
     no_access: 9999,
-  }, prefix: true
+  }, prefix: true, validate: true
 
   validates :ip, :severity, presence: true
   validates :ip, uniqueness: true

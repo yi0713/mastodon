@@ -44,15 +44,17 @@ namespace :api, format: false do
       resources :list, only: :show
     end
 
-    get '/streaming', to: 'streaming#index'
-    get '/streaming/(*any)', to: 'streaming#index'
+    with_options to: 'streaming#index' do
+      get '/streaming'
+      get '/streaming/(*any)'
+    end
 
     resources :custom_emojis, only: [:index]
     resources :suggestions, only: [:index, :destroy]
     resources :scheduled_statuses, only: [:index, :show, :update, :destroy]
     resources :preferences, only: [:index]
 
-    resources :annual_reports, only: [:index] do
+    resources :annual_reports, only: [:index, :show] do
       member do
         post :read
       end
@@ -75,7 +77,7 @@ namespace :api, format: false do
       end
     end
 
-    resources :media, only: [:create, :update, :show]
+    resources :media, only: [:create, :update, :show, :destroy]
     resources :blocks, only: [:index]
     resources :mutes, only: [:index]
     resources :favourites, only: [:index]
@@ -114,10 +116,13 @@ namespace :api, format: false do
         resources :rules, only: [:index]
         resources :domain_blocks, only: [:index]
         resource :privacy_policy, only: [:show]
+        resource :terms_of_service, only: [:show]
         resource :extended_description, only: [:show]
         resource :translation_languages, only: [:show]
         resource :languages, only: [:show]
         resource :activity, only: [:show], controller: :activity
+
+        get '/terms_of_service/:date', to: 'terms_of_services#show'
       end
     end
 
@@ -223,7 +228,7 @@ namespace :api, format: false do
 
     resources :featured_tags, only: [:index, :create, :destroy]
 
-    resources :polls, only: [:create, :show] do
+    resources :polls, only: [:show] do
       resources :votes, only: :create, module: :polls
     end
 
